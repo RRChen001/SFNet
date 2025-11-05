@@ -16,5 +16,5 @@ We use the following datasets in our experiments:
 * **[CelebA-HQ](https://mmlab.ie.cuhk.edu.hk/projects/CelebA.html)**
 * **[Paris StreetView](https://github.com/pathak22/context-encoder)**
 
-For testing, we adopt **[Irregular Masks (12k)](https://github.com/lamhoangtung/MaskDataset)** provided by *Liu et al.*
+For testing, we adopt **[Irregular Masks (12k)](https://nv-adlr.github.io/publication/partialconv-inpainting)** provided by *Liu et al.*
 
