@@ -13,7 +13,7 @@ We use python to build our code. Please make sure the following dependencies are
 We use the following datasets in our experiments:
 
 * **[Places2](http://places2.csail.mit.edu/)**
-* **[CelebA-HQ](https://mmlab.ie.cuhk.edu.hk/projects/CelebA.html)**
+* **[CelebA-HQ](https://github.com/tkarras/progressive_growing_of_gans)**
 * **[Paris StreetView](https://github.com/pathak22/context-encoder)**
 
 For testing, we adopt **[Irregular Masks (12k)](https://nv-adlr.github.io/publication/partialconv-inpainting)** provided by *Liu et al.*
