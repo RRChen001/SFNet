@@ -16,4 +16,4 @@ We use the following datasets in our experiments:
 * **[CelebA-HQ](https://github.com/tkarras/progressive_growing_of_gans)**
 * **[Paris StreetView](https://github.com/pathak22/context-encoder)**
 
-For testing, we adopt **[Irregular Masks (12k)](https://github.com/lamhoangtung/MaskDataset)** as provided by Liang Liu *et al.* in their work: [Link to paper](https://arxiv.org/abs/1804.07723)
+For testing, we adopt **[Irregular Masks (12k)](https://nv-adlr.github.io/publication/partialconv-inpainting)** as provided by Liang Liu *et al.* in their work: [Link to paper](https://arxiv.org/abs/1804.07723)
