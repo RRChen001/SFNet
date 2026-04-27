@@ -1,6 +1,6 @@
 import torch.nn as nn
 import torch
-
+import torch.nn.init as init
 
 class ChannelAttention(nn.Module):
     def __init__(self, in_planes):
@@ -57,9 +57,26 @@ class SCA(nn.Module):
         self.conv_beta = nn.Conv2d(chanel, chanel, kernel_size=3, padding=1)
         self.conv_beta2 = nn.Conv2d(chanel, chanel, kernel_size=3, padding=1)
         self.param_free_norm = nn.BatchNorm2d(chanel, affine=True)
+        self.latest_params = {}  # 用于存储最近的参数统计信息
+
+        # 改进的参数初始化
+        self._initialize_weights()
+
+    def _initialize_weights(self):
+        # 初始化卷积权重
+        init.normal_(self.conv_gamma.weight, mean=0.0, std=0.02)
+        init.normal_(self.conv_beta.weight, mean=0.0, std=0.02)
+        init.normal_(self.conv_gamma2.weight, mean=0.0, std=0.02)
+        init.normal_(self.conv_beta2.weight, mean=0.0, std=0.02)
+
+        # 初始化偏置项
+        init.constant_(self.conv_gamma.bias, 0.1)
+        init.constant_(self.conv_beta.bias, 0.1)
+        init.constant_(self.conv_gamma2.bias, 0.1)
+        init.constant_(self.conv_beta2.bias, 0.1)
 
     def forward(self, mx, tx):
-        x = torch.cat([mx, tx], 1) #沿着通道拼接
+        x = torch.cat([mx, tx], 1)  # 沿着通道拼接
         x = self.conv1(x)
         sx = self.spatial(x)
         cx = self.channel(x)
@@ -67,16 +84,26 @@ class SCA(nn.Module):
         y = self.conv2(y)
         gamma = self.conv_gamma(y)
         beta = self.conv_beta(y)
-        gamma2 = self.conv_gamma2(y)#
-        beta2 = self.conv_beta2(y)#
+        gamma2 = self.conv_gamma2(y)
+        beta2 = self.conv_beta2(y)
+
+        #记录参数统计信息
+        self.latest_params = {
+            'gamma': gamma.detach().cpu(),
+            'beta': beta.detach().cpu(),
+            'gamma2': gamma2.detach().cpu(),
+            'beta2': beta2.detach().cpu()
+                }
 
         normalized_tx = self.param_free_norm(tx)
-        normalized_mx = self.param_free_norm(mx)#
+        normalized_mx = self.param_free_norm(mx)
 
         out1 = normalized_tx * (1 + gamma) + beta
-        out2 = normalized_mx * (1 + gamma2) + beta2#
-        out = torch.cat([normalized_mx, normalized_tx], 1)#
-        out = self.conv1(out)#
+        out2 = normalized_mx * (1 + gamma2) + beta2
+        out = torch.cat([out1, out2], 1)
+        out = self.conv1(out)
 
         return out
 
+    def get_latest_params(self):
+        return self.latest_params
